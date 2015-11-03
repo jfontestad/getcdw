@@ -14,24 +14,25 @@
 get_cdw <- function(query, dsn = "CDW2", uid, pwd,
                     stringsAsFactors = FALSE, ...) {
 
-    # load package
-    # require(RODBC, quietly=TRUE)
-
-    # name the connection,
-    # you can have multiple connections open (why?)
+    # open a connection
     ch <- RODBC::odbcConnect(dsn = dsn, uid = uid, pwd = pwd)
+
+    # be sure to clean up, even on errors
     on.exit(close(ch))
 
     #run query
     outp <- RODBC::sqlQuery(ch, query,
                             stringsAsFactors = stringsAsFactors, ...)
 
+    # attempt to give back informative sql error messages if errors
     if (!is.data.frame(outp)) {
         errmsg <- regexpr("ORA-[0-9]+:.*$", outp)
         err <- regmatches(outp, errmsg)
         stop(err)
     }
 
+    # convert column names to lower-case, and add tbl_df class for
+    # convenient printing
     names(outp) <- tolower(names(outp))
     dplyr::tbl_df(outp)
 }
