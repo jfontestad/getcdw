@@ -28,7 +28,7 @@ get_cdw <- function(query, dsn = "CDW2", uid, pwd,
     if (!is.data.frame(outp)) {
         errmsg <- regexpr("ORA-[0-9]+:.*$", outp)
         err <- regmatches(outp, errmsg)
-        stop(err)
+        stop(err, call. = FALSE)
     }
 
     # convert column names to lower-case, and add tbl_df class for
