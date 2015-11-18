@@ -45,3 +45,40 @@ get_cdw <- function(query, dsn = "CDW2", uid = NULL, pwd = NULL,
     names(outp) <- tolower(names(outp))
     dplyr::tbl_df(outp)
 }
+
+#' Run a preview query
+#'
+#' Run a query but only return the first 10 rows of results. Useful for testing
+#' queries that might run slowly.
+#'
+#' @inheritParams get_cdw
+#' @export
+preview_cdw <- function(query, dsn = "CDW2", uid = NULL, pwd = NULL,
+                        stringsAsFactors = FALSE, ...) {
+
+    assert_that(is.string(query))
+    if (is.null(uid)) uid <- cred(dsn, "UID", force = FALSE, remember = TRUE)
+    if (is.null(pwd)) pwd <- cred(dsn, "PWD", force = FALSE, remember = TRUE)
+
+    # open a connection
+    ch <- RODBC::odbcConnect(dsn = dsn, uid = uid, pwd = pwd)
+
+    # be sure to clean up, even on errors
+    on.exit(close(ch))
+
+    #run query
+    outp <- RODBC::sqlQuery(ch, query,
+                            stringsAsFactors = stringsAsFactors, max = 10, ...)
+
+    # attempt to give back informative sql error messages if errors
+    if (!is.data.frame(outp)) {
+        errmsg <- regexpr("ORA-[0-9]+:.*$", outp)
+        err <- regmatches(outp, errmsg)
+        stop(err, call. = FALSE)
+    }
+
+    # convert column names to lower-case, and add tbl_df class for
+    # convenient printing
+    names(outp) <- tolower(names(outp))
+    dplyr::tbl_df(outp)
+}
