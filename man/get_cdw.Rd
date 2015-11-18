@@ -4,16 +4,17 @@
 \alias{get_cdw}
 \title{Get data from the CDW}
 \usage{
-get_cdw(query, dsn = "CDW2", uid, pwd, stringsAsFactors = FALSE, ...)
+get_cdw(query, dsn = "CDW2", uid = NULL, pwd = NULL,
+  stringsAsFactors = FALSE, ...)
 }
 \arguments{
 \item{query}{A SQL query, as a string of plain-text.}
 
 \item{dsn}{The name of the connection, as it appears in your \code{tnsnames}}
 
-\item{uid}{Your username}
+\item{uid}{Your username (see details)}
 
-\item{pwd}{Your password}
+\item{pwd}{Your password (see details)}
 
 \item{stringsAsFactors}{TRUE/FALSE. Whether strings should be returned as factors. FALSE by default}
 
@@ -23,6 +24,10 @@ get_cdw(query, dsn = "CDW2", uid, pwd, stringsAsFactors = FALSE, ...)
 Get data from the CDW
 }
 \details{
-Returns a data.frame (unless)
+Returns a data.frame if the query is successful, otherwise an error.
+If you don't enter a username/password, \code{get_cdw} will check the global
+environment for these values. The first time you run a query against a given
+\code{dsn}, you will be prompted for your credentials. These will be saved in
+your .Renviron file, so that you won't be prompted for them again in the future.
 }
 

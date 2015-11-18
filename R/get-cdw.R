@@ -2,17 +2,26 @@
 #'
 #' @param query A SQL query, as a string of plain-text.
 #' @param dsn The name of the connection, as it appears in your \code{tnsnames}
-#' @param uid Your username
-#' @param pwd Your password
+#' @param uid Your username (see details)
+#' @param pwd Your password (see details)
 #' @param stringsAsFactors TRUE/FALSE. Whether strings should be returned as factors. FALSE by default
 #' @param ... Other arguments passed on to \code{sqlQuery} in package \code{RODBC}
 #'
-#' @details Returns a data.frame (unless)
+#' @details Returns a data.frame if the query is successful, otherwise an error.
+#' If you don't enter a username/password, \code{get_cdw} will check the global
+#' environment for these values. The first time you run a query against a given
+#' \code{dsn}, you will be prompted for your credentials. These will be saved in
+#' your .Renviron file, so that you won't be prompted for them again in the future.
 #' @importFrom assertthat assert_that is.string
 #' @import RODBC
+#' @importFrom dplyr tbl_df
 #' @export
-get_cdw <- function(query, dsn = "CDW2", uid, pwd,
+get_cdw <- function(query, dsn = "CDW2", uid = NULL, pwd = NULL,
                     stringsAsFactors = FALSE, ...) {
+
+    assert_that(is.string(query))
+    if (is.null(uid)) uid <- cred(dsn, "UID", force = FALSE, remember = TRUE)
+    if (is.null(pwd)) pwd <- cred(dsn, "PWD", force = FALSE, remember = TRUE)
 
     # open a connection
     ch <- RODBC::odbcConnect(dsn = dsn, uid = uid, pwd = pwd)
