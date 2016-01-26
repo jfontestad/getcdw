@@ -1,6 +1,8 @@
 #' Get data from the CDW
 #'
-#' @param query A SQL query, as a string of plain-text.
+#' @param query A SQL query. This can be either the text of the query, the name
+#' of a file that contains the query, or a valid connection that contains the
+#' text of the query.
 #' @param dsn The name of the connection, as it appears in your \code{tnsnames}
 #' @param uid Your username (see details)
 #' @param pwd Your password (see details)
@@ -18,6 +20,22 @@
 #' @export
 get_cdw <- function(query, dsn = "CDW2", uid = NULL, pwd = NULL,
                     stringsAsFactors = FALSE, ...) {
+    UseMethod("get_cdw")
+}
+
+#' @export
+get_cdw.connection <- function(query, dsn = "CDW2", uid = NULL, pwd = NULL,
+                               stringsAsFactors = FALSE, ...) {
+    query <- sql_from_con(query)
+    get_cdw(query, dsn, uid, pwd, stringsAsFactors, ...)
+}
+
+#' @export
+get_cdw.character <- function(query, dsn = "CDW2", uid = NULL, pwd = NULL,
+                              stringsAsFactors = FALSE, ...) {
+    if (file.exists(query)) {
+        query <- sql_from_con(file(query))
+    }
 
     assert_that(is.string(query))
     if (is.null(uid)) uid <- cred(dsn, "UID", force = FALSE, remember = TRUE)
@@ -56,29 +74,6 @@ get_cdw <- function(query, dsn = "CDW2", uid = NULL, pwd = NULL,
 preview_cdw <- function(query, dsn = "CDW2", uid = NULL, pwd = NULL,
                         stringsAsFactors = FALSE, ...) {
 
-    assert_that(is.string(query))
-    if (is.null(uid)) uid <- cred(dsn, "UID", force = FALSE, remember = TRUE)
-    if (is.null(pwd)) pwd <- cred(dsn, "PWD", force = FALSE, remember = TRUE)
+    get_cdw(query, dsn, uid, pwd, stringsAsFactors, max = 10, ...)
 
-    # open a connection
-    ch <- RODBC::odbcConnect(dsn = dsn, uid = uid, pwd = pwd)
-
-    # be sure to clean up, even on errors
-    on.exit(close(ch))
-
-    #run query
-    outp <- RODBC::sqlQuery(ch, query,
-                            stringsAsFactors = stringsAsFactors, max = 10, ...)
-
-    # attempt to give back informative sql error messages if errors
-    if (!is.data.frame(outp)) {
-        errmsg <- regexpr("ORA-[0-9]+:.*$", outp)
-        err <- regmatches(outp, errmsg)
-        stop(err, call. = FALSE)
-    }
-
-    # convert column names to lower-case, and add tbl_df class for
-    # convenient printing
-    names(outp) <- tolower(names(outp))
-    dplyr::tbl_df(outp)
 }
