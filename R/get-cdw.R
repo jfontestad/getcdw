@@ -34,7 +34,7 @@ get_cdw.connection <- function(query, dsn = "CDW2", uid = NULL, pwd = NULL,
 get_cdw.character <- function(query, dsn = "CDW2", uid = NULL, pwd = NULL,
                               stringsAsFactors = FALSE, ...) {
     if (file.exists(query)) {
-        query <- sql_from_con(file(query))
+        query <- sql_from_file(query)
     }
 
     assert_that(is.string(query))
