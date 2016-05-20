@@ -1,12 +1,12 @@
 Package: getcdw
 Type: Package
 Title: Query the CADS Data Warehouse from R
-Version: 0.0.4.1
+Version: 0.0.5.1
 Date: 2015-11-18
 Author: Tarak Shah
 Maintainer: Tarak Shah <tarak_shah@berkeley.edu>
 Description: Execute SQL queries from R and return data.frames
-License: For internal (UC Berkeley) use
+License: MIT + file LICENSE
 Imports:
     assertthat,
     RODBC,
