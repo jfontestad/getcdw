@@ -1,0 +1,58 @@
+---
+title: "getcdw"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+getcdw is a tool to make it easier to query the `CADS` data warehouse from R.
+
+You can install getcdw from github:
+
+```{r install, eval = FALSE}
+devtools::install_github("tarakc02/getcdw")
+```
+
+## Queries
+
+You can type a query:
+
+```{r query1, warning = FALSE, message = FALSE}
+# dplyr just prints the returned data.frames prettier
+library(dplyr)
+library(getcdw)
+
+get_cdw("select report_name from cdw.d_entity_mv where entity_id = 640993")
+```
+
+You can also pass a query from a file, for instance: `get_cdw("sql/filename.sql")`.
+
+## Table and column search
+
+Look for tables with `find_tables()`:
+
+```{r find}
+# want the committees table, but don't remember the exact name:
+find_tables("committee")
+
+# or view all of the d_bio tables:
+find_tables("d_bio")
+
+# all of the giving summary tables are like sf_something_summary_mv:
+find_tables("^sf_.+_summary_mv$")
+```
+
+Or look for specific columns, either throughout the database or within a given table:
+
+```{r find_columns}
+# what's the name of the household_id column in d_entity?
+find_columns("household", table_name = "d_entity_mv")
+
+# where are all of the places degree information appears?
+find_columns("degree")
+
+# continue filtering in dplyr if necessary:
+find_columns("degree") %>% filter(table_name != "d_bio_degrees_mv")
+```
