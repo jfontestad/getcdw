@@ -67,10 +67,11 @@ get_cdw.character <- function(query, dsn = "CDW2", uid = NULL, pwd = NULL,
 
 #' Run a preview query
 #'
-#' Run a query but only return the first 10 rows of results. Useful for testing
+#' Run a query but only return the first n rows of results. Useful for testing
 #' queries that might run slowly.
 #'
 #' @inheritParams get_cdw
+#' @param n The maximum number of rows to return
 #' @export
 preview_cdw <- function(query, n = 10, dsn = "CDW2", uid = NULL, pwd = NULL,
                         stringsAsFactors = FALSE, ...) {

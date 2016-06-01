@@ -12,6 +12,8 @@ preview_cdw(query, n = 10, dsn = "CDW2", uid = NULL, pwd = NULL,
 of a file that contains the query, or a valid connection that contains the
 text of the query.}
 
+\item{n}{The maximum number of rows to return}
+
 \item{dsn}{The name of the connection, as it appears in your \code{tnsnames}}
 
 \item{uid}{Your username (see details)}
@@ -23,7 +25,7 @@ text of the query.}
 \item{...}{Other arguments passed on to \code{sqlQuery} in package \code{RODBC}}
 }
 \description{
-Run a query but only return the first 10 rows of results. Useful for testing
+Run a query but only return the first n rows of results. Useful for testing
 queries that might run slowly.
 }
 
