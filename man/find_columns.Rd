@@ -9,7 +9,7 @@ find_columns(search_term = NULL, table_name = NULL, schema = "CDW")
 \arguments{
 \item{search_term}{Pattern of the column(s) you are looking for, e.g. 'class_campaign' or 'household'}
 
-\item{table_name}{If you already know the table where the column is, e.g. 'd_entity_mv'}
+\item{table_name}{Name (or partial name) of the table (optional)}
 
 \item{schema}{In case you're searching through something other than the CDW, e.g. 'advance'}
 }
