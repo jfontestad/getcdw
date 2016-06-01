@@ -4,12 +4,14 @@
 \alias{find_tables}
 \title{Search a database schema for tables}
 \usage{
-find_tables(search_term = NULL, schema = "CDW")
+find_tables(search_term = NULL, schema = "CDW", ...)
 }
 \arguments{
 \item{search_term}{Pattern of the table(s) you are looking for, e.g. 'committee'}
 
 \item{schema}{In case you're searching through something other than the CDW, e.g. 'advance'}
+
+\item{...}{Passed on to \code{get_cdw}}
 }
 \description{
 Search a database schema for tables

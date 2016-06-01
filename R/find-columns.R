@@ -3,9 +3,11 @@
 #' @param search_term Pattern of the column(s) you are looking for, e.g. 'class_campaign' or 'household'
 #' @param table_name Name (or partial name) of the table (optional)
 #' @param schema In case you're searching through something other than the CDW, e.g. 'advance'
+#' @param ... Passed on to \code{get_cdw}
 #'
 #' @export
-find_columns <- function(search_term = NULL, table_name = NULL, schema = "CDW") {
+find_columns <- function(search_term = NULL, table_name = NULL, schema = "CDW",
+                         ...) {
     validate_search_term(table_name)
     validate_search_term(search_term)
 
@@ -26,7 +28,8 @@ find_columns <- function(search_term = NULL, table_name = NULL, schema = "CDW") 
     if (!is.null(search_term))
         column_part <- paste("and regexp_like(column_name, '",
                              search_term, "', 'i') ", sep = "")
+    else column_part <- ""
 
     query <- paste(main_part, schema_part, column_part, table_part, sep = "")
-    get_cdw(query)
+    get_cdw(query, ...)
 }

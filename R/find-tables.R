@@ -2,9 +2,10 @@
 #'
 #' @param search_term Pattern of the table(s) you are looking for, e.g. 'committee'
 #' @param schema In case you're searching through something other than the CDW, e.g. 'advance'
+#' @param ... Passed on to \code{get_cdw}
 #'
 #' @export
-find_tables <- function(search_term = NULL, schema = "CDW") {
+find_tables <- function(search_term = NULL, schema = "CDW", ...) {
     validate_search_term(search_term)
     query <- paste("select lower(table_name) as table_name from all_tables where owner = '",
                    schema, "'", sep = "")
@@ -15,5 +16,5 @@ find_tables <- function(search_term = NULL, schema = "CDW") {
     else search_part = ""
 
     query <- paste(query, search_part, sep = "")
-    get_cdw(query)
+    get_cdw(query, ...)
 }
