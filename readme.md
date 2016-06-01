@@ -25,7 +25,7 @@ get_cdw("select report_name from cdw.d_entity_mv where entity_id = 640993")
     ## Source: local data frame [1 x 1]
     ## 
     ##          report_name
-    ##                (chr)
+    ## *              <chr>
     ## 1 Shah, Tarak Rashmi
 
 You can also pass a query from a file, for instance: `get_cdw("sql/filename.sql")`.
@@ -43,7 +43,7 @@ find_tables("committee")
     ## Source: local data frame [1 x 1]
     ## 
     ##           table_name
-    ##                (chr)
+    ## *              <chr>
     ## 1 d_bio_committee_mv
 
 ``` r
@@ -54,7 +54,7 @@ find_tables("d_bio")
     ## Source: local data frame [26 x 1]
     ## 
     ##                      table_name
-    ##                           (chr)
+    ## *                         <chr>
     ## 1             d_bio_activity_mv
     ## 2              d_bio_address_mv
     ## 3          d_bio_affiliation_mv
@@ -75,7 +75,7 @@ find_tables("^sf_.+_summary_mv$")
     ## Source: local data frame [26 x 1]
     ## 
     ##                     table_name
-    ##                          (chr)
+    ## *                        <chr>
     ## 1     sf_allocation_summary_mv
     ## 2   sf_entity_aogfy_summary_mv
     ## 3     sf_entity_aog_summary_mv
@@ -98,7 +98,7 @@ find_columns("household", table_name = "d_entity_mv")
     ## Source: local data frame [1 x 4]
     ## 
     ##    table_name         column_name data_type data_length
-    ##         (chr)               (chr)     (chr)       (int)
+    ## *       <chr>               <chr>     <chr>       <int>
     ## 1 d_entity_mv household_entity_id    NUMBER          22
 
 ``` r
@@ -109,7 +109,7 @@ find_columns("degree")
     ## Source: local data frame [668 x 4]
     ## 
     ##                 table_name                column_name data_type
-    ##                      (chr)                      (chr)     (chr)
+    ## *                    <chr>                      <chr>     <chr>
     ## 1  cads_events_download_mv          degree_major_year  VARCHAR2
     ## 2  cads_events_download_mv   ungrad_degree_holder_flg      CHAR
     ## 3  cads_events_download_mv graduate_degree_holder_flg      CHAR
@@ -121,26 +121,72 @@ find_columns("degree")
     ## 9         d_bio_degrees_mv                degree_desc  VARCHAR2
     ## 10        d_bio_degrees_mv                degree_year  VARCHAR2
     ## ..                     ...                        ...       ...
-    ## Variables not shown: data_length (int)
+    ## Variables not shown: data_length <int>.
+
+Code search
+-----------
+
+You can search through TMS tables to find codes:
 
 ``` r
-# continue filtering in dplyr if necessary:
-find_columns("degree") %>% filter(table_name != "d_bio_degrees_mv")
+# where/how do we record peace_corps participation?
+find_codes("peace corps")
 ```
 
-    ## Source: local data frame [659 x 4]
+    ## Source: local data frame [116 x 4]
     ## 
-    ##                       table_name                column_name data_type
-    ##                            (chr)                      (chr)     (chr)
-    ## 1        cads_events_download_mv          degree_major_year  VARCHAR2
-    ## 2        cads_events_download_mv   ungrad_degree_holder_flg      CHAR
-    ## 3        cads_events_download_mv graduate_degree_holder_flg      CHAR
-    ## 4  d_bio_relationship_details_mv          degree_major_year  VARCHAR2
-    ## 5                    d_entity_mv         degree2_stop_dt_id  VARCHAR2
-    ## 6                    d_entity_mv            degree2_stop_dt      DATE
-    ## 7                    d_entity_mv         degree2_grad_dt_id  VARCHAR2
-    ## 8                    d_entity_mv            degree2_grad_dt      DATE
-    ## 9                    d_entity_mv   degree2_institution_code  VARCHAR2
-    ## 10                   d_entity_mv   degree2_institution_name  VARCHAR2
-    ## ..                           ...                        ...       ...
-    ## Variables not shown: data_length (int)
+    ##     code                  description       table_name       view_name
+    ## *  <chr>                        <chr>            <chr>           <chr>
+    ## 1  PCAFG    Peace Corps - Afghanistan Student Activity tms_student_act
+    ## 2   PCAR Peace Corps - African Region Student Activity tms_student_act
+    ## 3  PCALB        Peace Corps - Albania Student Activity tms_student_act
+    ## 4  PCARM        Peace Corps - Armenia Student Activity tms_student_act
+    ## 5  PCBGD     Peace Corps - Bangladesh Student Activity tms_student_act
+    ## 6  PCBLZ         Peace Corps - Belize Student Activity tms_student_act
+    ## 7  PCBEN          Peace Corps - Benin Student Activity tms_student_act
+    ## 8  PCBOL        Peace Corps - Bolivia Student Activity tms_student_act
+    ## 9  PCBWA       Peace Corps - Botswana Student Activity tms_student_act
+    ## 10 PCBRA         Peace Corps - Brazil Student Activity tms_student_act
+    ## ..   ...                          ...              ...             ...
+
+``` r
+# interest in neuroscience may present itself in terms of a major/minor, 
+# an explicit interest code, attendance at an event, etc. let's look for
+# all possibilities:
+find_codes("neuroscience")
+```
+
+    ## Source: local data frame [16 x 4]
+    ## 
+    ##     code                              description            table_name
+    ## *  <chr>                                    <chr>                 <chr>
+    ## 1   HWNI                   Neuroscience Institute       Accounting Dept
+    ## 2   4617 L&S Olson Berkeley Science, Neuroscience              Activity
+    ## 3   5781    LS Berk Science Neuroscience 11-28-12              Activity
+    ## 4     NS                   Neuroscience Institute       Activity Source
+    ## 5   HWNI                   Neuroscience Institute Allocation Department
+    ## 6   GNSO                 *Neurosciences Institute     Allocation School
+    ## 7   CPSN                    *Neurosciences Center         Campaign Code
+    ## 8  78001        Behavioral & Systems Neuroscience         Concentration
+    ## 9  78006                   Cognitive Neuroscience         Concentration
+    ## 10  HWNI                Neuroscience Grad Program           Departments
+    ## 11   NEU                             Neuroscience             Interests
+    ## 12    NS                   Neuroscience Institute      Mail List Source
+    ## 13   594                             Neuroscience                Majors
+    ## 14    NS                   Neuroscience Institute                Office
+    ## 15    NS                   Neuroscience Institute      Prospect Program
+    ## 16    NS                   Neuroscience Institute             Unit Code
+    ## Variables not shown: view_name <chr>.
+
+``` r
+# i just want to look for neuro-related event codes
+find_codes("neuro", "^activity$")
+```
+
+    ## Source: local data frame [2 x 4]
+    ## 
+    ##    code                              description table_name
+    ## * <int>                                    <chr>      <chr>
+    ## 1  4617 L&S Olson Berkeley Science, Neuroscience   Activity
+    ## 2  5781    LS Berk Science Neuroscience 11-28-12   Activity
+    ## Variables not shown: view_name <chr>.

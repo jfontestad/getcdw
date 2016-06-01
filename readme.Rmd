@@ -52,7 +52,21 @@ find_columns("household", table_name = "d_entity_mv")
 
 # where are all of the places degree information appears?
 find_columns("degree")
+```
 
-# continue filtering in dplyr if necessary:
-find_columns("degree") %>% filter(table_name != "d_bio_degrees_mv")
+## Code search
+
+You can search through TMS tables to find codes:
+
+```{r find_codes}
+# where/how do we record peace_corps participation?
+find_codes("peace corps")
+
+# interest in neuroscience may present itself in terms of a major/minor, 
+# an explicit interest code, attendance at an event, etc. let's look for
+# all possibilities:
+find_codes("neuroscience")
+
+# i just want to look for neuro-related event codes
+find_codes("neuro", "^activity$")
 ```
