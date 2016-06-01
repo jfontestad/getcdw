@@ -26,3 +26,19 @@ cred <- function(dsn, type, force = FALSE, remember = TRUE) {
     if (remember) save_env(varname, var)
     var
 }
+
+#' Set/reset credentials
+#'
+#' @param dsn The name of the connection, as it appears in your tnsnames
+#'
+#' @description If run in an interactive session, you will be prompted for your UID (user ID)
+#' and PWD (password). Your entries will be stored in an environment variable,
+#' as well as saved in your .Renviron file. You can also manually edit the .Renviron
+#' file to set/change credentials.
+#' @export
+reset_credentials <- function(dsn) {
+    if (!interactive())
+        stop("Set environment variables or edit your .Renviron")
+    cred(dsn, type = "UID", force = TRUE, remember = TRUE)
+    cred(dsn, type = "PWD", force = TRUE, remember = TRUE)
+}
