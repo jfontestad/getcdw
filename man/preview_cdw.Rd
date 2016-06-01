@@ -4,7 +4,7 @@
 \alias{preview_cdw}
 \title{Run a preview query}
 \usage{
-preview_cdw(query, dsn = "CDW2", uid = NULL, pwd = NULL,
+preview_cdw(query, n = 10, dsn = "CDW2", uid = NULL, pwd = NULL,
   stringsAsFactors = FALSE, ...)
 }
 \arguments{
