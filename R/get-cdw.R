@@ -72,9 +72,9 @@ get_cdw.character <- function(query, dsn = "CDW2", uid = NULL, pwd = NULL,
 #'
 #' @inheritParams get_cdw
 #' @export
-preview_cdw <- function(query, dsn = "CDW2", uid = NULL, pwd = NULL,
+preview_cdw <- function(query, n = 10, dsn = "CDW2", uid = NULL, pwd = NULL,
                         stringsAsFactors = FALSE, ...) {
 
-    get_cdw(query, dsn, uid, pwd, stringsAsFactors, max = 10, ...)
+    get_cdw(query, dsn, uid, pwd, stringsAsFactors, max = n, ...)
 
 }
