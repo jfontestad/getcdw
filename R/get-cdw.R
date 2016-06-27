@@ -31,17 +31,8 @@ get_cdw.connection <- function(query, dsn = "CDW2", uid = NULL, pwd = NULL,
     get_cdw(query, dsn, uid, pwd, stringsAsFactors, ...)
 }
 
-#' @export
-get_cdw.character <- function(query, dsn = "CDW2", uid = NULL, pwd = NULL,
-                              stringsAsFactors = FALSE, ...) {
-    if (file.exists(query)) {
-        query <- sql_from_file(query)
-    }
-
-    assert_that(is.string(query))
-    if (is.null(uid)) uid <- cred(dsn, "UID", force = FALSE, remember = TRUE)
-    if (is.null(pwd)) pwd <- cred(dsn, "PWD", force = FALSE, remember = TRUE)
-
+# actually sends the query
+send_qry <- function(query, dsn, uid, pwd, stringsAsFactors, ...) {
     # open a connection
     ch <- RODBC::odbcConnect(dsn = dsn, uid = uid, pwd = pwd)
 
@@ -63,6 +54,33 @@ get_cdw.character <- function(query, dsn = "CDW2", uid = NULL, pwd = NULL,
     # convenient printing
     names(outp) <- tolower(names(outp))
     dplyr::tbl_df(outp)
+}
+
+msend_qry <- memoise::memoise(send_qry)
+
+#' Reset cache
+#'
+#' getcdw caches query results for better performance. Use \code{reset_cdw}
+#' to empty the cache
+#'
+#' @export
+reset_cdw <- function() memoise::forget(msend_qry)
+
+#' @export
+get_cdw.character <- function(query, dsn = "CDW2", uid = NULL, pwd = NULL,
+                              stringsAsFactors = FALSE, ...) {
+    if (file.exists(query)) {
+        query <- sql_from_file(query)
+    }
+
+    assert_that(is.string(query))
+    if (is.null(uid)) uid <- cred(dsn, "UID", force = FALSE, remember = TRUE)
+    if (is.null(pwd)) pwd <- cred(dsn, "PWD", force = FALSE, remember = TRUE)
+
+    # use msend to send the query, which will return already known results
+    # in the case of a repeated query
+    msend_qry(query = query, dsn = dsn, uid = uid, pwd = pwd,
+          stringsAsFactors = stringsAsFactors, ...)
 }
 
 #' Run a preview query

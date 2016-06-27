@@ -1,7 +1,7 @@
 Package: getcdw
 Type: Package
 Title: Query the CADS Data Warehouse from R
-Version: 0.0.6.0
+Version: 0.0.6.9001
 Date: 2015-11-18
 Author: Tarak Shah
 Maintainer: Tarak Shah <tarak_shah@berkeley.edu>
@@ -10,7 +10,8 @@ License: MIT + file LICENSE
 Imports:
     assertthat,
     RODBC,
-    dplyr
+    dplyr,
+    memoise
 LazyData: TRUE
 RoxygenNote: 5.0.1
 Suggests: testthat
