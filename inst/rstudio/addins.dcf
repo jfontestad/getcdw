@@ -1,0 +1,4 @@
+Name: Run preview query
+Description: Runs a query against a defualt CDW instance
+Binding: runPreviewQuery
+Interactive: true
