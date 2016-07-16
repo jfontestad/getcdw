@@ -13,8 +13,9 @@
 #' If you don't enter a username/password, \code{get_cdw} will check the global
 #' environment for these values. The first time you run a query against a given
 #' \code{dsn}, you will be prompted for your credentials. These will be saved in
-#' your .Renviron file, so that you won't be prompted for them again in the future.
-#' If you need to reset your credentials, use the function \code{reset_credentials}.
+#' an encrypted database in your home directory, so that you won't be prompted
+#' for them again in the future. If you need to reset your credentials, use the
+#' function \link{\code{reset_credentials}}.
 #' @importFrom assertthat assert_that is.string
 #' @import RODBC
 #' @importFrom dplyr tbl_df
@@ -74,8 +75,11 @@ get_cdw.character <- function(query, dsn = "CDW2", uid = NULL, pwd = NULL,
     }
 
     assert_that(is.string(query))
-    if (is.null(uid)) uid <- cred(dsn, "UID", force = FALSE, remember = TRUE)
-    if (is.null(pwd)) pwd <- cred(dsn, "PWD", force = FALSE, remember = TRUE)
+    if (is.null(uid) || is.null(pwd)) {
+        credential <- credential(dsn)
+        uid <- credential$UID
+        pwd <- credential$PWD
+    }
 
     # use msend to send the query, which will return already known results
     # in the case of a repeated query
