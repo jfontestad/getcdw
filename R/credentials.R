@@ -1,30 +1,77 @@
-save_env <- function(varname, value) {
-    path <- normalizePath("~/")
-    filename <- file.path(path, ".Renviron")
-    if (!file.exists(filename)) file.create(filename)
-    cat(varname, "='", value, "'\n", sep = "", file = filename, append = TRUE)
+credential <- function(dsn) {
+    # first check the global environment
+    dsncredential <- get_credentials_from_env(dsn)
+    if (!is.null(dsncredential)) {
+        store(dsn, dsncredential)
+        return(dsncredential)
+    }
+
+    # otherwise see if the creds are in the encrypted db
+    all_credentials <- load_db()
+    dsncredential <- get_credential(all_credentials, dsn)
+    if (!is.null(dsncredential)) return(dsncredential)
+
+    # finally, prompt user for input
+    get_credentials_from_user(dsn)
 }
 
-cred <- function(dsn, type, force = FALSE, remember = TRUE) {
-    varname <- paste(toupper(dsn), type, sep = "_")
-    env <- Sys.getenv(varname)
-    if (!identical(env, "") && !force) return(env)
+get_credentials_from_user <- function(dsn) {
+    ask_for_type <- function(type) {
+        varname <- paste(toupper(dsn), type, sep = "_")
+        msg <- paste("Please enter your ", type, " for connection ", dsn, " and press enter:", sep = "")
+        if (type != "PWD") {
+            message(msg)
+            var <- readline(": ")
+        } else {
+            var <- .rs.askForPassword(msg)
+        }
 
-    if (!interactive()) {
-        stop("Please set environment variables for ", dsn,
-             call. = FALSE)
+        if (identical(var, "")) {
+            stop("Invalid", call. = FALSE)
+        }
+
+        do.call(Sys.setenv, structure(list(var), names = varname))
+        var
     }
+    UID <- ask_for_type("UID")
+    PWD <- ask_for_type("PWD")
 
-    message("Please enter your ", type, " for connection ", dsn, " and press enter:")
-    var <- readline(": ")
+    res <- list(UID = UID, PWD = PWD)
+    store(dsn, res)
+    invisible(res)
+}
 
-    if (identical(var, "")) {
-        stop("Invalid", call. = FALSE)
-    }
+get_credentials_from_env <- function(dsn) {
+    varname <- function(type)
+        paste(toupper(dsn), type, sep = "_")
+    uid <- Sys.getenv(varname("UID"))
+    pwd <- Sys.getenv(varname("PWD"))
 
-    do.call(Sys.setenv, structure(list(var), names = varname))
-    if (remember) save_env(varname, var)
-    var
+    if (!identical(uid, "") && !identical(pwd, ""))
+        return(list(UID = uid, PWD = pwd))
+    else return(NULL)
+}
+
+db_filename <- function() {
+    path <- normalizePath("~/")
+    file.path(path, ".getcdw")
+}
+
+load_db <- function() {
+    filename <- db_filename()
+    if (file.exists(filename)) credentials <- readRDS(filename)
+    else credentials <- credential_db()
+    credentials
+}
+
+
+
+store <- function(dsn, dsncredential) {
+    credentials <- load_db()
+    UID <- dsncredential$UID
+    PWD <- dsncredential$PWD
+    set_credential(credentials, dsn, uid = UID, pwd = PWD)
+    saveRDS(credentials, db_filename())
 }
 
 #' Set/reset credentials
@@ -37,8 +84,6 @@ cred <- function(dsn, type, force = FALSE, remember = TRUE) {
 #' file to set/change credentials.
 #' @export
 reset_credentials <- function(dsn) {
-    if (!interactive())
-        stop("Set environment variables or edit your .Renviron")
-    cred(dsn, type = "UID", force = TRUE, remember = TRUE)
-    cred(dsn, type = "PWD", force = TRUE, remember = TRUE)
+    get_credentials_from_user(dsn)
+
 }

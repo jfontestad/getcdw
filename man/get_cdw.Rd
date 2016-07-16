@@ -30,7 +30,8 @@ Returns a data.frame if the query is successful, otherwise an error.
 If you don't enter a username/password, \code{get_cdw} will check the global
 environment for these values. The first time you run a query against a given
 \code{dsn}, you will be prompted for your credentials. These will be saved in
-your .Renviron file, so that you won't be prompted for them again in the future.
-If you need to reset your credentials, use the function \code{reset_credentials}.
+an encrypted database in your home directory, so that you won't be prompted
+for them again in the future. If you need to reset your credentials, use the
+function \link{\code{reset_credentials}}.
 }
 
