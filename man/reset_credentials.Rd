@@ -12,7 +12,7 @@ reset_credentials(dsn)
 \description{
 If run in an interactive session, you will be prompted for your UID (user ID)
 and PWD (password). Your entries will be stored in an environment variable,
-as well as saved in your .Renviron file. You can also manually edit the .Renviron
-file to set/change credentials.
+as well as saved in the encrypted database called ".getcdw" in your home
+direcotry.
 }
 

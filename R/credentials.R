@@ -9,7 +9,13 @@ credential <- function(dsn) {
     # otherwise see if the creds are in the encrypted db
     all_credentials <- load_db()
     dsncredential <- get_credential(all_credentials, dsn)
-    if (!is.null(dsncredential)) return(dsncredential)
+    if (!is.null(dsncredential)) {
+        varname <- function(type)
+            paste(toupper(dsn), type, sep = "_")
+        do.call(Sys.setenv, structure(list(dsncredential$UID, dsncredential$PWD),
+                                      names = c(varname("UID"), varname("PWD"))))
+        return(dsncredential)
+    }
 
     # finally, prompt user for input
     get_credentials_from_user(dsn)
@@ -80,10 +86,9 @@ store <- function(dsn, dsncredential) {
 #'
 #' @description If run in an interactive session, you will be prompted for your UID (user ID)
 #' and PWD (password). Your entries will be stored in an environment variable,
-#' as well as saved in your .Renviron file. You can also manually edit the .Renviron
-#' file to set/change credentials.
+#' as well as saved in the encrypted database called ".getcdw" in your home
+#' direcotry.
 #' @export
 reset_credentials <- function(dsn) {
     get_credentials_from_user(dsn)
-
 }
