@@ -1,10 +1,8 @@
 credential <- function(dsn) {
     # first check the global environment
     dsncredential <- get_credentials_from_env(dsn)
-    if (!is.null(dsncredential)) {
-        store(dsn, dsncredential)
+    if (!is.null(dsncredential))
         return(dsncredential)
-    }
 
     # otherwise see if the creds are in the encrypted db
     all_credentials <- load_db()
