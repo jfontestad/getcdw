@@ -6,8 +6,7 @@
 #' @param dsn The name of the connection, as it appears in your \code{tnsnames}
 #' @param uid Your username (see details)
 #' @param pwd Your password (see details)
-#' @param stringsAsFactors TRUE/FALSE. Whether strings should be returned as factors. FALSE by default
-#' @param ... Other arguments passed on to \code{sqlQuery} in package \code{RODBC}
+#' @param ... Other arguments passed on to \code{dbSendQuery} in package \code{ROracle}
 #'
 #' @details Returns a data.frame if the query is successful, otherwise an error.
 #' If you don't enter a username/password, \code{get_cdw} will check the global
@@ -17,47 +16,62 @@
 #' for them again in the future. If you need to reset your credentials, use the
 #' function \link{\code{reset_credentials}}.
 #' @importFrom assertthat assert_that is.string
-#' @import RODBC
 #' @importFrom dplyr tbl_df
 #' @export
-get_cdw <- function(query, dsn = "CDW2", uid = NULL, pwd = NULL,
-                    stringsAsFactors = FALSE, ...) {
+get_cdw <- function(query, dsn = "CDW2", uid = NULL, pwd = NULL, ...) {
     UseMethod("get_cdw")
 }
 
 #' @export
-get_cdw.connection <- function(query, dsn = "CDW2", uid = NULL, pwd = NULL,
-                               stringsAsFactors = FALSE, ...) {
+get_cdw.connection <- function(query, dsn = "CDW2",
+                               uid = NULL, pwd = NULL, ...) {
     query <- sql_from_con(query)
-    get_cdw(query, dsn, uid, pwd, stringsAsFactors, ...)
+    get_cdw(query, dsn, uid, pwd, ...)
 }
 
-# actually sends the query
-send_qry <- function(query, dsn, uid, pwd, stringsAsFactors, ...) {
+# sends the query and retrieves results as a data frame
+run_qry <- function(query, dsn, uid, pwd, n = -1L, ...) {
+
     # open a connection
-    ch <- RODBC::odbcConnect(dsn = dsn, uid = uid, pwd = pwd)
+    ch <- connect(dsn, uid, pwd)
 
     # be sure to clean up, even on errors
-    on.exit(close(ch))
+    on.exit(disconnect(ch))
 
-    #run query
-    outp <- RODBC::sqlQuery(ch, query,
-                            stringsAsFactors = stringsAsFactors, ...)
+    #send query, attempt to give back informative sql error messages if needed
+    res <- send_qry(connection = ch, query = query)
 
-    # attempt to give back informative sql error messages if errors
-    if (!is.data.frame(outp)) {
-        errmsg <- regexpr("ORA-[0-9]+:.*$", outp)
-        err <- regmatches(outp, errmsg)
-        stop(err, call. = FALSE)
-    }
+    # fetch results
+    res <- ROracle::fetch(res, n = n)
 
     # convert column names to lower-case, and add tbl_df class for
     # convenient printing
-    names(outp) <- tolower(names(outp))
-    dplyr::tbl_df(outp)
+    prep_output(res)
 }
 
-msend_qry <- memoise::memoise(send_qry)
+connect <- function(dsn, uid, pwd) {
+    driver <- DBI::dbDriver("Oracle")
+    ROracle::dbConnect(driver, uid, pwd, dbname = dsn)
+}
+
+disconnect <- function(connection) {
+    ROracle::dbDisconnect(connection)
+}
+
+prep_output <- function(res) {
+    names(res) <- tolower(names(res))
+    dplyr::tbl_df(res)
+}
+
+send_qry <- function(connection, query, ...) {
+    tryCatch(ROracle::dbSendQuery(connection, query, ...),
+             error = function(e) {
+                 errmsg <- regexpr("ORA-[0-9]+:.*\n", e$message)
+                 stop(regmatches(e$message, errmsg), call. = FALSE)
+             })
+}
+
+mrun_qry <- memoise::memoise(run_qry)
 
 #' Reset cache
 #'
@@ -69,7 +83,7 @@ reset_cdw <- function() memoise::forget(msend_qry)
 
 #' @export
 get_cdw.character <- function(query, dsn = "CDW2", uid = NULL, pwd = NULL,
-                              stringsAsFactors = FALSE, ...) {
+                              ...) {
     if (file.exists(query)) {
         query <- sql_from_file(query)
     }
@@ -83,8 +97,7 @@ get_cdw.character <- function(query, dsn = "CDW2", uid = NULL, pwd = NULL,
 
     # use msend to send the query, which will return already known results
     # in the case of a repeated query
-    msend_qry(query = query, dsn = dsn, uid = uid, pwd = pwd,
-          stringsAsFactors = stringsAsFactors, ...)
+    mrun_qry(query = query, dsn = dsn, uid = uid, pwd = pwd, ...)
 }
 
 #' Run a preview query
@@ -96,8 +109,7 @@ get_cdw.character <- function(query, dsn = "CDW2", uid = NULL, pwd = NULL,
 #' @param n The maximum number of rows to return
 #' @export
 preview_cdw <- function(query, n = 10, dsn = "CDW2", uid = NULL, pwd = NULL,
-                        stringsAsFactors = FALSE, ...) {
+                        ...) {
 
-    get_cdw(query, dsn, uid, pwd, stringsAsFactors, max = n, ...)
-
+    get_cdw(query, dsn, uid, pwd, n = n, ...)
 }

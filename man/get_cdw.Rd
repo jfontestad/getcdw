@@ -4,8 +4,7 @@
 \alias{get_cdw}
 \title{Get data from the CDW}
 \usage{
-get_cdw(query, dsn = "CDW2", uid = NULL, pwd = NULL,
-  stringsAsFactors = FALSE, ...)
+get_cdw(query, dsn = "CDW2", uid = NULL, pwd = NULL, ...)
 }
 \arguments{
 \item{query}{A SQL query. This can be either the text of the query, the name
@@ -18,9 +17,7 @@ text of the query.}
 
 \item{pwd}{Your password (see details)}
 
-\item{stringsAsFactors}{TRUE/FALSE. Whether strings should be returned as factors. FALSE by default}
-
-\item{...}{Other arguments passed on to \code{sqlQuery} in package \code{RODBC}}
+\item{...}{Other arguments passed on to \code{dbSendQuery} in package \code{ROracle}}
 }
 \description{
 Get data from the CDW
