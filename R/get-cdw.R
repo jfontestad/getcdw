@@ -50,6 +50,10 @@ run_qry <- function(query, dsn, uid, pwd, n = -1L, ...) {
 }
 
 connect <- function(dsn, uid, pwd) {
+    # without loading the library, DBI can't find Oracle driver,
+    # can't figure out why or how else to fix it.
+    library(ROracle)
+
     driver <- DBI::dbDriver("Oracle")
     ROracle::dbConnect(driver, uid, pwd, dbname = dsn)
 }
