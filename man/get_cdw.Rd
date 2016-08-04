@@ -4,7 +4,7 @@
 \alias{get_cdw}
 \title{Get data from the CDW}
 \usage{
-get_cdw(query, dsn = "CDW2", uid = NULL, pwd = NULL, ...)
+get_cdw(query, dsn = config("default_dsn"), uid = NULL, pwd = NULL, ...)
 }
 \arguments{
 \item{query}{A SQL query. This can be either the text of the query, the name

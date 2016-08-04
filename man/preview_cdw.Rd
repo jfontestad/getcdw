@@ -4,7 +4,8 @@
 \alias{preview_cdw}
 \title{Run a preview query}
 \usage{
-preview_cdw(query, n = 10, dsn = "CDW2", uid = NULL, pwd = NULL, ...)
+preview_cdw(query, n = 10, dsn = config("default_dsn"), uid = NULL,
+  pwd = NULL, ...)
 }
 \arguments{
 \item{query}{A SQL query. This can be either the text of the query, the name

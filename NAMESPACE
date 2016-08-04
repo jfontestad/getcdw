@@ -2,6 +2,7 @@
 
 S3method(get_cdw,character)
 S3method(get_cdw,connection)
+export(config)
 export(find_codes)
 export(find_columns)
 export(find_tables)

@@ -18,12 +18,12 @@
 #' @importFrom assertthat assert_that is.string
 #' @importFrom dplyr tbl_df
 #' @export
-get_cdw <- function(query, dsn = "CDW2", uid = NULL, pwd = NULL, ...) {
+get_cdw <- function(query, dsn = config("default_dsn"), uid = NULL, pwd = NULL, ...) {
     UseMethod("get_cdw")
 }
 
 #' @export
-get_cdw.connection <- function(query, dsn = "CDW2",
+get_cdw.connection <- function(query, dsn = config("default_dsn"),
                                uid = NULL, pwd = NULL, ...) {
     query <- sql_from_con(query)
     get_cdw(query, dsn, uid, pwd, ...)
@@ -86,7 +86,7 @@ mrun_qry <- memoise::memoise(run_qry)
 reset_cdw <- function() memoise::forget(msend_qry)
 
 #' @export
-get_cdw.character <- function(query, dsn = "CDW2", uid = NULL, pwd = NULL,
+get_cdw.character <- function(query, dsn = config("default_dsn"), uid = NULL, pwd = NULL,
                               ...) {
     if (file.exists(query)) {
         query <- sql_from_file(query)
@@ -112,7 +112,7 @@ get_cdw.character <- function(query, dsn = "CDW2", uid = NULL, pwd = NULL,
 #' @inheritParams get_cdw
 #' @param n The maximum number of rows to return
 #' @export
-preview_cdw <- function(query, n = 10, dsn = "CDW2", uid = NULL, pwd = NULL,
+preview_cdw <- function(query, n = 10, dsn = config("default_dsn"), uid = NULL, pwd = NULL,
                         ...) {
 
     get_cdw(query, dsn, uid, pwd, n = n, ...)
