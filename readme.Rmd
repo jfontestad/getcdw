@@ -70,3 +70,65 @@ find_codes("neuroscience")
 # i just want to look for neuro-related event codes
 find_codes("neuro", "^activity$")
 ```
+
+## dplyr backend
+
+If you use dplyr, you can now query the data warehouse directly, rather than writing SQL and pulling data into a local data frame:
+
+```{r src_oracle_demo}
+# use src_oracle("DSNNAME") to connect to dsn DSNNAME
+# for example: src_oracle("CDW2") or src_oracle("URELUAT")
+cdw <- src_oracle()
+
+# each table you reference is described using the dplyr's tbl() function
+entity <- tbl(cdw, "cdw.d_entity_mv")
+transactions <- tbl(cdw, "cdw.f_transaction_detail_mv")
+
+# note that auto-complete works inside the dplyr verbs!
+entity <- entity %>% select(entity_id, person_or_org)
+entity
+
+# the top donors of 2001, along with whether they are people or organizations
+transactions %>%
+    filter(between(giving_record_dt,
+                   to_date('01/01/2001', 'mm/dd/yyyy'),
+                   to_date('12/31/2001', 'mm/dd/yyyy'))) %>%
+    filter(pledged_basis_flg == "Y") %>%
+    group_by(donor_entity_id_nbr) %>%
+    summarise(giving = sum(benefit_dept_credited_amt)) %>%
+    inner_join(entity, by = c("donor_entity_id_nbr" = "entity_id")) %>%
+    arrange(desc(giving))
+```
+
+## Parameterized Templates
+
+The `parameterize_template` function allows you to turn templates that have ##highlighted## variables into functions:
+
+```{r param_template_simple}
+f <- parameterize_template("my name is ##name##")
+f("tarak")
+
+# need named arguments when more than 1 parameter:
+g <-parameterize_template("hi i'm ##name##, i am ##age## years old") 
+g(name = "tarak", age = 36)
+```
+
+`parameterize_template` is useful in creating reports because it allows you to write SQL with parameters, with the added benefit of the convenient function interface. 
+
+```{r parameterized_templates}
+template <- "
+select donor_entity_id_nbr, 
+sum(benefit_dept_credited_amt) as giving
+from cdw.f_transaction_detail_mv
+where pledged_basis_flg = 'Y'
+and giving_record_dt between to_date('##from_date##', 'mm/dd/yyyy') 
+and to_date('##to_date##', 'mm/dd/yyyy')
+group by donor_entity_id_nbr
+having sum(benefit_dept_credited_amt) > 5000000"
+
+top_donors_between <- parameterize_template(template)
+report <- top_donors_between(from_date = "01/01/2001", to_date = "12/31/2001")
+get_cdw(report)
+```
+
+Just like with `get_cdw`, `parameterize_template` works with files also, for example `parameterize_template('sql/my-template.sql')`.
