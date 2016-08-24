@@ -187,6 +187,9 @@ dplyr backend
 If you use dplyr, you can now query the data warehouse directly, rather than writing SQL and pulling data into a local data frame:
 
 ``` r
+# you have to have dplyr loaded to use dplyr
+library(dplyr)
+
 # use src_oracle("DSNNAME") to connect to dsn DSNNAME
 # for example: src_oracle("CDW2") or src_oracle("URELUAT")
 cdw <- src_oracle()
