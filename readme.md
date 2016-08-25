@@ -250,6 +250,29 @@ transactions %>%
     ## 10             2010868 2730269   2010868             O
     ## # ... with more rows
 
+``` r
+# dplyr will not actually pull the data into memory, which makes things
+# pretty fast. when you're ready to actually download a data frame, run collect():
+
+transactions %>%
+    filter(between(giving_record_dt,
+                   to_date('01/01/2001', 'mm/dd/yyyy'),
+                   to_date('12/31/2001', 'mm/dd/yyyy'))) %>%
+    filter(pledged_basis_flg == "Y") %>%
+    group_by(donor_entity_id_nbr) %>%
+    summarise(giving = sum(benefit_dept_credited_amt)) %>%
+    filter(giving > 5000000) %>% 
+    collect
+```
+
+    ## # A tibble: 4 x 2
+    ##   donor_entity_id_nbr  giving
+    ##                 <dbl>   <dbl>
+    ## 1                3422 6006000
+    ## 2               39830 6006000
+    ## 3             2014421 6265183
+    ## 4                1824 5150000
+
 Parameterized Templates
 -----------------------
 

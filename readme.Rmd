@@ -101,6 +101,19 @@ transactions %>%
     summarise(giving = sum(benefit_dept_credited_amt)) %>%
     inner_join(entity, by = c("donor_entity_id_nbr" = "entity_id")) %>%
     arrange(desc(giving))
+
+# dplyr will not actually pull the data into memory, which makes things
+# pretty fast. when you're ready to actually download a data frame, run collect():
+
+transactions %>%
+    filter(between(giving_record_dt,
+                   to_date('01/01/2001', 'mm/dd/yyyy'),
+                   to_date('12/31/2001', 'mm/dd/yyyy'))) %>%
+    filter(pledged_basis_flg == "Y") %>%
+    group_by(donor_entity_id_nbr) %>%
+    summarise(giving = sum(benefit_dept_credited_amt)) %>%
+    filter(giving > 5000000) %>% 
+    collect
 ```
 
 ## Parameterized Templates
