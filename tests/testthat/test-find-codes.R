@@ -23,3 +23,9 @@ test_that("find_columns works with no input", {
 test_that("find_codes does not accept multiple input", {
     expect_error(find_codes(c("activity", "degree")))
 })
+
+test_that("find_codes checks MSAs", {
+    x <- find_codes("sacramento")
+    expect_true("geo_code" %in% x$view_name)
+    expect_true("40900" %in% x$code)
+})
