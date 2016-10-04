@@ -15,7 +15,14 @@ find_codes <- function(search_term = NULL, table_name = NULL, ...) {
 
     select_part <- "select tms_type_code as code, tms_type_desc as description,
     tms_table_name as table_name, tms_view_name as view_name
-    from cdw.d_tms_type_mv"
+    from "
+
+    from_part <- "(
+select tms_type_code, tms_type_desc, tms_table_name, tms_view_name
+from cdw.d_tms_type_mv
+union
+select geo_code, geo_code_description, 'MSA', 'geo_code'
+from cdw.d_geo_metro_area_mv where geo_type = 1)"
 
     where_part <- "where tms_type_code is not null"
 
@@ -31,7 +38,7 @@ find_codes <- function(search_term = NULL, table_name = NULL, ...) {
 
     order_part <- "order by tms_table_name, tms_type_desc"
 
-    query <- paste(select_part, where_part, search_part,
+    query <- paste(select_part, from_part, where_part, search_part,
                    table_part, order_part, sep = "\n")
 
     get_cdw(query, ...)
