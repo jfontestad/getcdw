@@ -1,7 +1,7 @@
 Package: getcdw
 Type: Package
 Title: Query the CADS Data Warehouse from R
-Version: 0.1.0.9000
+Version: 0.1.0.9001
 Date: 2015-11-18
 Author: Tarak Shah
 Maintainer: Tarak Shah <tarak_shah@berkeley.edu>
