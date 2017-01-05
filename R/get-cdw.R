@@ -31,35 +31,16 @@ get_cdw.connection <- function(query, dsn = config("default_dsn"),
 
 # sends the query and retrieves results as a data frame
 run_qry <- function(query, dsn, uid, pwd, n = -1L, ...) {
-
-    # open a connection
-    ch <- connect(dsn, uid, pwd)
-
-    # be sure to clean up, even on errors
-    on.exit(disconnect(ch))
-
     #send query, attempt to give back informative sql error messages if needed
-    res <- send_qry(connection = ch, query = query)
+    res <- send_qry(dsn = dsn, uid = uid, pwd = pwd, query = query, restart = TRUE)
 
     # fetch results
-    res <- ROracle::fetch(res, n = n)
+    resdf <- ROracle::fetch(res, n = n)
+    ROracle::dbClearResult(res)
 
     # convert column names to lower-case, and add tbl_df class for
     # convenient printing
-    prep_output(res)
-}
-
-connect <- function(dsn, uid, pwd) {
-    # without loading the library, DBI can't find Oracle driver,
-    # can't figure out why or how else to fix it.
-    library(ROracle)
-
-    driver <- DBI::dbDriver("Oracle")
-    ROracle::dbConnect(driver, uid, pwd, dbname = dsn)
-}
-
-disconnect <- function(connection) {
-    ROracle::dbDisconnect(connection)
+    prep_output(resdf)
 }
 
 prep_output <- function(res) {
@@ -67,9 +48,15 @@ prep_output <- function(res) {
     dplyr::tbl_df(res)
 }
 
-send_qry <- function(connection, query, ...) {
+send_qry <- function(dsn, uid, pwd, query, restart, ...) {
+    connection <- connect(dsn, uid, pwd)
     tryCatch(ROracle::dbSendQuery(connection, query, ...),
              error = function(e) {
+                 if (grepl("invalid connection", e$message, ignore.case = TRUE) &&
+                     restart) {
+                     reset(dsn, uid, pwd)
+                     return(send_qry(dsn, uid, pwd, query, restart = FALSE, ...))
+                 }
                  errmsg <- regexpr("ORA-[0-9]+:.*\n", e$message)
                  stop(regmatches(e$message, errmsg), call. = FALSE)
              })
@@ -83,7 +70,7 @@ mrun_qry <- memoise::memoise(run_qry)
 #' to empty the cache
 #'
 #' @export
-reset_cdw <- function() memoise::forget(msend_qry)
+reset_cdw <- function() memoise::forget(mrun_qry)
 
 #' @export
 get_cdw.character <- function(query, dsn = config("default_dsn"), uid = NULL, pwd = NULL,
