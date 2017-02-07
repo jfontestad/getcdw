@@ -52,7 +52,10 @@ send_qry <- function(dsn, uid, pwd, query, restart, ...) {
     connection <- connect(dsn, uid, pwd)
     tryCatch(ROracle::dbSendQuery(connection, query, ...),
              error = function(e) {
-                 if (grepl("invalid connection", e$message, ignore.case = TRUE) &&
+                 if (
+                     (grepl("invalid connection", e$message, ignore.case = TRUE) ||
+                      grepl("ORA-02396", e$message) ||
+                      grepl("ORA-01012", e$message)) &&
                      restart) {
                      reset(dsn, uid, pwd)
                      return(send_qry(dsn, uid, pwd, query, restart = FALSE, ...))
