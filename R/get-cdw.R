@@ -55,7 +55,9 @@ send_qry <- function(dsn, uid, pwd, query, restart, ...) {
                  if (
                      (grepl("invalid connection", e$message, ignore.case = TRUE) ||
                       grepl("ORA-02396", e$message) ||
-                      grepl("ORA-01012", e$message)) &&
+                      grepl("ORA-01012", e$message) ||
+                      grepl("ORA-03113", e$message) ||
+                      grepl("ORA-03114", e$message)) &&
                      restart) {
                      reset(dsn, uid, pwd)
                      return(send_qry(dsn, uid, pwd, query, restart = FALSE, ...))
