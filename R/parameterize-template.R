@@ -16,6 +16,7 @@ parameterize_template <- function(tmpl) {
     if (is.na(tmpl))
         stop("Unable to process template")
     keys <- stringr::str_match_all(tmpl, "##([^#]+)##")[[1]][,2]
+    keys <- unique(keys)
     if (length(keys) < 1L)
         warning("No parameters were identified in your template")
 
@@ -62,4 +63,12 @@ print.parameterized_template <- function(f) {
     cat("A parameterized template with parameters: ",
         paste(attr(f, "parameters"), collapse = ", "))
     invisible(f)
+}
+
+#' @export
+parameters <- function(f) UseMethod("parameters")
+
+#' @export
+parameters.parameterized_template <- function(f) {
+    attr(f, "parameters")
 }
