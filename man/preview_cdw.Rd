@@ -26,4 +26,3 @@ text of the query.}
 Run a query but only return the first n rows of results. Useful for testing
 queries that might run slowly.
 }
-

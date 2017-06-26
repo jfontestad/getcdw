@@ -18,4 +18,3 @@ find_columns(search_term = NULL, table_name = NULL, schema = "CDW", ...)
 \description{
 Search a database schema for column names
 }
-

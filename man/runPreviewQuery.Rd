@@ -13,4 +13,3 @@ shortcut through the RStudio "Addins | Browse Addins | Keyboard shortcuts"
 menu. RStudio also has syntax highlighting/indenting for SQL files (adjust
 the file type in the bottom right corner of the text editor window).
 }
-

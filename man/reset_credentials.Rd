@@ -15,4 +15,3 @@ and PWD (password). Your entries will be stored in an environment variable,
 as well as saved in the encrypted database called ".getcdw" in your home
 direcotry.
 }
-

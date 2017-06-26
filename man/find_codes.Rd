@@ -21,4 +21,3 @@ minor, department, etc. codes.
 \details{
 Either \code{search_term} or \code{table_name} can be \code{NULL}
 }
-

@@ -19,4 +19,3 @@ the database is opened silently in the background, but this function might
 be useful if you need to create a connection without immediately querying
 the database. For instance, \url{http://rmarkdown.rstudio.com/authoring_knitr_engines.html#sql}.
 }
-

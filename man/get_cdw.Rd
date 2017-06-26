@@ -31,4 +31,3 @@ an encrypted database in your home directory, so that you won't be prompted
 for them again in the future. If you need to reset your credentials, use the
 function \code{\link{reset_credentials}}.
 }
-

@@ -16,4 +16,3 @@ find_tables(search_term = NULL, schema = "CDW", ...)
 \description{
 Search a database schema for tables
 }
-

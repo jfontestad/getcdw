@@ -10,4 +10,3 @@ reset_cdw()
 getcdw caches query results for better performance. Use \code{reset_cdw}
 to empty the cache
 }
-

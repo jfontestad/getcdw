@@ -17,4 +17,3 @@ greeting_template <- "my name is ##name##, and I am ##age## years old"
 greeter <- parameterize_template(greeting_template)
 greeter(name = "tarak", age = 36)
 }
-
