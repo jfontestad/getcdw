@@ -1,3 +1,6 @@
+# getcdw 0.1.0.9003
+* Update `dplyr`-compatibility functions to work with the newest versions of `dplyr` and `dbplyr`
+
 # getcdw 0.1.0.9000
 
 * Added a `NEWS.md` file to track changes to the package.
