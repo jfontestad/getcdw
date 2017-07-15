@@ -69,7 +69,7 @@ send_qry <- function(dsn, uid, pwd, query, restart, ...) {
 
 memoised <- memoise::memoise(run_qry, cache = memoise::cache_filesystem("~/.memo-cache"))
 mrun_qry <- function(...) {
-    message("Note: You're in presenter mode, all queries cached to disk")
+    if (Sys.getenv("PRESENTER") != "PRESENTER") message("Note: You're in presenter mode, all queries cached to disk")
     memoised(...)
 }
 
