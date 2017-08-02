@@ -1,3 +1,4 @@
+#' @importFrom dplyr db_desc
 #' @export
 db_desc.OraConnection <- function(con) {
     info <- ROracle::dbGetInfo(con)
