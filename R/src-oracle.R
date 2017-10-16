@@ -1,3 +1,4 @@
+#' @importFrom dplyr db_desc
 #' @export
 db_desc.OraConnection <- function(con) {
     info <- ROracle::dbGetInfo(con)
@@ -23,7 +24,7 @@ db_collect.OraConnection <- function(con, sql, n = -1, warn_incomplete = TRUE, .
 sql_escape_ident.OraConnection <- function(con, x) x
 
 #' @importFrom dplyr sql_select
-# @export
+#' @export
 sql_select.OraConnection <- dbplyr:::sql_select.Oracle
 
 #' @importFrom dplyr sql_translate_env
