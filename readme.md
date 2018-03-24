@@ -23,8 +23,8 @@ get_cdw("select report_name from cdw.d_entity_mv where entity_id = 640993")
 ```
 
     ## # A tibble: 1 x 1
-    ##          report_name
-    ##                <chr>
+    ##   report_name       
+    ##   <chr>             
     ## 1 Shah, Tarak Rashmi
 
 You can also pass a query from a file, for instance: `get_cdw("sql/filename.sql")`.
@@ -40,8 +40,8 @@ find_tables("committee")
 ```
 
     ## # A tibble: 1 x 1
-    ##           table_name
-    ##                <chr>
+    ##   table_name        
+    ##   <chr>             
     ## 1 d_bio_committee_mv
 
 ``` r
@@ -49,20 +49,20 @@ find_tables("committee")
 find_tables("d_bio")
 ```
 
-    ## # A tibble: 24 x 1
-    ##                       table_name
-    ##                            <chr>
-    ## 1      d_bio_student_activity_mv
-    ## 2                 d_bio_sport_mv
-    ## 3            d_bio_salutation_mv
-    ## 4          d_bio_relationship_mv
-    ## 5  d_bio_relationship_details_mv
-    ## 6      d_bio_org_relationship_mv
-    ## 7         d_bio_org_employees_mv
-    ## 8                  d_bio_name_mv
-    ## 9          d_bio_mailing_list_mv
-    ## 10             d_bio_interest_mv
-    ## # ... with 14 more rows
+    ## # A tibble: 26 x 1
+    ##    table_name                   
+    ##    <chr>                        
+    ##  1 d_bio_student_activity_mv    
+    ##  2 d_bio_sport_mv               
+    ##  3 d_bio_salutation_mv          
+    ##  4 d_bio_relationship_mv        
+    ##  5 d_bio_relationship_details_mv
+    ##  6 d_bio_org_relationship_mv    
+    ##  7 d_bio_org_employees_mv       
+    ##  8 d_bio_name_mv                
+    ##  9 d_bio_mailing_list_mv        
+    ## 10 d_bio_interest_mv            
+    ## # ... with 16 more rows
 
 ``` r
 # all of the giving summary tables are like sf_something_summary_mv:
@@ -70,18 +70,18 @@ find_tables("^sf_.+_summary_mv$")
 ```
 
     ## # A tibble: 26 x 1
-    ##                       table_name
-    ##                            <chr>
-    ## 1      sf_transaction_summary_mv
-    ## 2         sf_prospect_summary_mv
-    ## 3     sf_prospect_prp_summary_mv
-    ## 4   sf_prospect_prpfy_summary_mv
-    ## 5      sf_prospect_fy_summary_mv
-    ## 6    sf_prospect_dept_summary_mv
-    ## 7  sf_prospect_deptfy_summary_mv
-    ## 8     sf_prospect_aog_summary_mv
-    ## 9   sf_prospect_aogfy_summary_mv
-    ## 10         sf_hh_corp_summary_mv
+    ##    table_name                 
+    ##    <chr>                      
+    ##  1 sf_allocation_summary_mv   
+    ##  2 sf_entity_aogfy_summary_mv 
+    ##  3 sf_entity_aog_summary_mv   
+    ##  4 sf_entity_deptfy_summary_mv
+    ##  5 sf_entity_dept_summary_mv  
+    ##  6 sf_entity_fy_summary_mv    
+    ##  7 sf_entity_prpfy_summary_mv 
+    ##  8 sf_entity_prp_summary_mv   
+    ##  9 sf_entity_summary_mv       
+    ## 10 sf_hh_corp_aogfy_summary_mv
     ## # ... with 16 more rows
 
 Or look for specific columns, either throughout the database or within a given table:
@@ -92,29 +92,29 @@ find_columns("household", table_name = "d_entity_mv")
 ```
 
     ## # A tibble: 1 x 4
-    ##    table_name         column_name data_type data_length
-    ##         <chr>               <chr>     <chr>       <dbl>
-    ## 1 d_entity_mv household_entity_id    NUMBER          22
+    ##   table_name  column_name         data_type data_length
+    ##   <chr>       <chr>               <chr>           <dbl>
+    ## 1 d_entity_mv household_entity_id NUMBER           22.0
 
 ``` r
 # where are all of the places degree information appears?
 find_columns("degree")
 ```
 
-    ## # A tibble: 695 x 4
-    ##                       table_name          column_name data_type
-    ##                            <chr>                <chr>     <chr>
-    ## 1               d_bio_degrees_mv          degree_type      CHAR
-    ## 2               d_bio_degrees_mv     degree_type_desc  VARCHAR2
-    ## 3               d_bio_degrees_mv    degree_level_code      CHAR
-    ## 4               d_bio_degrees_mv    degree_level_desc  VARCHAR2
-    ## 5               d_bio_degrees_mv          degree_code  VARCHAR2
-    ## 6               d_bio_degrees_mv          degree_desc  VARCHAR2
-    ## 7               d_bio_degrees_mv          degree_year  VARCHAR2
-    ## 8               d_bio_degrees_mv honorary_degree_code  VARCHAR2
-    ## 9               d_bio_degrees_mv honorary_degree_desc  VARCHAR2
-    ## 10 d_bio_relationship_details_mv    degree_major_year  VARCHAR2
-    ## # ... with 685 more rows, and 1 more variables: data_length <dbl>
+    ## # A tibble: 745 x 4
+    ##    table_name                    column_name         data_type data_length
+    ##    <chr>                         <chr>               <chr>           <dbl>
+    ##  1 d_bio_degrees_mv              degree_type         CHAR             1.00
+    ##  2 d_bio_degrees_mv              degree_type_desc    VARCHAR2       120   
+    ##  3 d_bio_degrees_mv              degree_level_code   CHAR             1.00
+    ##  4 d_bio_degrees_mv              degree_level_desc   VARCHAR2       120   
+    ##  5 d_bio_degrees_mv              degree_code         VARCHAR2         5.00
+    ##  6 d_bio_degrees_mv              degree_desc         VARCHAR2       120   
+    ##  7 d_bio_degrees_mv              degree_year         VARCHAR2         4.00
+    ##  8 d_bio_degrees_mv              honorary_degree_co~ VARCHAR2         5.00
+    ##  9 d_bio_degrees_mv              honorary_degree_de~ VARCHAR2       120   
+    ## 10 d_bio_relationship_details_mv degree_major_year   VARCHAR2      4000   
+    ## # ... with 735 more rows
 
 Code search
 -----------
@@ -127,18 +127,18 @@ find_codes("peace corps")
 ```
 
     ## # A tibble: 116 x 4
-    ##     code                  description       table_name       view_name
-    ##    <chr>                        <chr>            <chr>           <chr>
-    ## 1  PCAFG    Peace Corps - Afghanistan Student Activity tms_student_act
-    ## 2   PCAR Peace Corps - African Region Student Activity tms_student_act
-    ## 3  PCALB        Peace Corps - Albania Student Activity tms_student_act
-    ## 4  PCARM        Peace Corps - Armenia Student Activity tms_student_act
-    ## 5  PCBGD     Peace Corps - Bangladesh Student Activity tms_student_act
-    ## 6  PCBLZ         Peace Corps - Belize Student Activity tms_student_act
-    ## 7  PCBEN          Peace Corps - Benin Student Activity tms_student_act
-    ## 8  PCBOL        Peace Corps - Bolivia Student Activity tms_student_act
-    ## 9  PCBWA       Peace Corps - Botswana Student Activity tms_student_act
-    ## 10 PCBRA         Peace Corps - Brazil Student Activity tms_student_act
+    ##    code  description                  table_name       view_name      
+    ##    <chr> <chr>                        <chr>            <chr>          
+    ##  1 PCAFG Peace Corps - Afghanistan    Student Activity tms_student_act
+    ##  2 PCAR  Peace Corps - African Region Student Activity tms_student_act
+    ##  3 PCALB Peace Corps - Albania        Student Activity tms_student_act
+    ##  4 PCARM Peace Corps - Armenia        Student Activity tms_student_act
+    ##  5 PCBGD Peace Corps - Bangladesh     Student Activity tms_student_act
+    ##  6 PCBLZ Peace Corps - Belize         Student Activity tms_student_act
+    ##  7 PCBEN Peace Corps - Benin          Student Activity tms_student_act
+    ##  8 PCBOL Peace Corps - Bolivia        Student Activity tms_student_act
+    ##  9 PCBWA Peace Corps - Botswana       Student Activity tms_student_act
+    ## 10 PCBRA Peace Corps - Brazil         Student Activity tms_student_act
     ## # ... with 106 more rows
 
 ``` r
@@ -149,25 +149,24 @@ find_codes("neuroscience")
 ```
 
     ## # A tibble: 16 x 4
-    ##     code                              description            table_name
-    ##    <chr>                                    <chr>                 <chr>
-    ## 1   HWNI                   Neuroscience Institute       Accounting Dept
-    ## 2   4617 L&S Olson Berkeley Science, Neuroscience              Activity
-    ## 3   5781    LS Berk Science Neuroscience 11-28-12              Activity
-    ## 4     NS                   Neuroscience Institute       Activity Source
-    ## 5   HWNI                   Neuroscience Institute Allocation Department
-    ## 6   GNSO                 *Neurosciences Institute     Allocation School
-    ## 7   CPSN                    *Neurosciences Center         Campaign Code
-    ## 8  78001        Behavioral & Systems Neuroscience         Concentration
-    ## 9  78006                   Cognitive Neuroscience         Concentration
-    ## 10  HWNI                Neuroscience Grad Program           Departments
-    ## 11   NEU                             Neuroscience             Interests
-    ## 12    NS                   Neuroscience Institute      Mail List Source
-    ## 13   594                             Neuroscience                Majors
-    ## 14    NS                   Neuroscience Institute                Office
-    ## 15    NS                   Neuroscience Institute      Prospect Program
-    ## 16    NS                   Neuroscience Institute             Unit Code
-    ## # ... with 1 more variables: view_name <chr>
+    ##    code  description                              table_name   view_name  
+    ##    <chr> <chr>                                    <chr>        <chr>      
+    ##  1 HWNI  Neuroscience Institute                   Accounting ~ tms_accoun~
+    ##  2 4617  L&S Olson Berkeley Science, Neuroscience Activity     tms_activi~
+    ##  3 5781  LS Berk Science Neuroscience 11-28-12    Activity     tms_activi~
+    ##  4 NS    Neuroscience Institute                   Activity So~ tms_activi~
+    ##  5 HWNI  Neuroscience Institute                   Allocation ~ tms_alloc_~
+    ##  6 GNSO  *Neurosciences Institute                 Allocation ~ tms_alloc_~
+    ##  7 CPSN  *Neurosciences Center                    Campaign Co~ tms_campai~
+    ##  8 78001 Behavioral & Systems Neuroscience        Concentrati~ tms_concen~
+    ##  9 78006 Cognitive Neuroscience                   Concentrati~ tms_concen~
+    ## 10 HWNI  Neuroscience Grad Program                Departments  tms_dept_c~
+    ## 11 NEU   Neuroscience                             Interests    tms_intere~
+    ## 12 NS    Neuroscience Institute                   Mail List S~ tms_mail_l~
+    ## 13 594   Neuroscience                             Majors       tms_majors 
+    ## 14 NS    Neuroscience Institute                   Office       tms_office 
+    ## 15 NS    Neuroscience Institute                   Prospect Pr~ tms_program
+    ## 16 NS    Neuroscience Institute                   Unit Code    tms_unit_c~
 
 ``` r
 # i just want to look for neuro-related event codes
@@ -175,11 +174,10 @@ find_codes("neuro", "^activity$")
 ```
 
     ## # A tibble: 2 x 4
-    ##    code                              description table_name
-    ##   <chr>                                    <chr>      <chr>
-    ## 1  4617 L&S Olson Berkeley Science, Neuroscience   Activity
-    ## 2  5781    LS Berk Science Neuroscience 11-28-12   Activity
-    ## # ... with 1 more variables: view_name <chr>
+    ##   code  description                              table_name view_name     
+    ##   <chr> <chr>                                    <chr>      <chr>         
+    ## 1 4617  L&S Olson Berkeley Science, Neuroscience Activity   tms_activity_~
+    ## 2 5781  LS Berk Science Neuroscience 11-28-12    Activity   tms_activity_~
 
 dplyr backend
 -------------
@@ -187,37 +185,31 @@ dplyr backend
 If you use dplyr, you can now query the data warehouse directly, rather than writing SQL and pulling data into a local data frame:
 
 ``` r
-# you have to have dplyr loaded to use dplyr
 library(dplyr)
 
-# use src_oracle("DSNNAME") to connect to dsn DSNNAME
-# for example: src_oracle("CDW2") or src_oracle("URELUAT")
-cdw <- src_oracle()
-
 # each table you reference is described using the dplyr's tbl() function
-entity <- tbl(cdw, "cdw.d_entity_mv")
-transactions <- tbl(cdw, "cdw.f_transaction_detail_mv")
+entity <- tbl_cdw("cdw.d_entity_mv")
+transactions <- tbl_cdw("cdw.f_transaction_detail_mv")
 
 # note that auto-complete works inside the dplyr verbs!
 entity <- entity %>% select(entity_id, person_or_org)
 entity
 ```
 
-    ## Source:   query [?? x 2]
-    ## Database: oracle 11.2.0.4.0 [tarak@URELUAT]
-    ## 
+    ## # Source:   lazy query [?? x 2]
+    ## # Database: OraConnection
     ##    entity_id person_or_org
-    ##        <dbl>         <chr>
-    ## 1     324212             P
-    ## 2     294198             P
-    ## 3     221450             P
-    ## 4    3074563             P
-    ## 5      15052             P
-    ## 6      17665             P
-    ## 7      20263             P
-    ## 8     692410             P
-    ## 9    3256615             P
-    ## 10    839479             P
+    ##        <dbl> <chr>        
+    ##  1    637519 P            
+    ##  2    637969 P            
+    ##  3    642078 P            
+    ##  4    641801 P            
+    ##  5    641803 P            
+    ##  6    642414 P            
+    ##  7    637429 P            
+    ##  8    637452 P            
+    ##  9    637747 P            
+    ## 10    637783 P            
     ## # ... with more rows
 
 ``` r
@@ -233,21 +225,21 @@ transactions %>%
     arrange(desc(giving))
 ```
 
-    ## Source:   query [?? x 3]
-    ## Database: oracle 11.2.0.4.0 [tarak@URELUAT]
-    ## 
-    ##    donor_entity_id_nbr  giving entity_id person_or_org
-    ##                  <dbl>   <dbl>     <dbl>         <chr>
-    ## 1              2014421 6265183   2014421             O
-    ## 2                 3422 6006000      3422             P
-    ## 3                39830 6006000     39830             P
-    ## 4                 1824 5150000      1824             P
-    ## 5                18305 4124767     18305             P
-    ## 6               677429 3159974    677429             P
-    ## 7              2014324 3057653   2014324             O
-    ## 8                29998 3054450     29998             P
-    ## 9               507872 2779989    507872             P
-    ## 10             2010868 2730269   2010868             O
+    ## # Source:     lazy query [?? x 3]
+    ## # Database:   OraConnection
+    ## # Ordered by: desc(giving)
+    ##    donor_entity_id_nbr  giving person_or_org
+    ##                  <dbl>   <dbl> <chr>        
+    ##  1             2014421 6265183 O            
+    ##  2                3422 6006000 P            
+    ##  3               39830 6006000 P            
+    ##  4                1824 5150000 P            
+    ##  5               18305 4124767 P            
+    ##  6              677429 3159974 P            
+    ##  7             2014324 3057653 O            
+    ##  8               29998 3054450 P            
+    ##  9              507872 2779989 P            
+    ## 10             2010868 2730269 O            
     ## # ... with more rows
 
 ``` r

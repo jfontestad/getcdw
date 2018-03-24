@@ -75,17 +75,12 @@ find_codes("neuro", "^activity$")
 
 If you use dplyr, you can now query the data warehouse directly, rather than writing SQL and pulling data into a local data frame:
 
-```{r src_oracle_demo}
-# you have to have dplyr loaded to use dplyr
+```{r src_oracle_demo, warning = FALSE, message = FALSE}
 library(dplyr)
 
-# use src_oracle("DSNNAME") to connect to dsn DSNNAME
-# for example: src_oracle("CDW2") or src_oracle("URELUAT")
-cdw <- src_oracle()
-
 # each table you reference is described using the dplyr's tbl() function
-entity <- tbl(cdw, "cdw.d_entity_mv")
-transactions <- tbl(cdw, "cdw.f_transaction_detail_mv")
+entity <- tbl_cdw("cdw.d_entity_mv")
+transactions <- tbl_cdw("cdw.f_transaction_detail_mv")
 
 # note that auto-complete works inside the dplyr verbs!
 entity <- entity %>% select(entity_id, person_or_org)

@@ -17,7 +17,12 @@ tbl_cdw.character <- function(query, dsn = NULL, uid = NULL, pwd = NULL) {
         query <- sql_from_file(query)
     }
 
+    if (!grepl(pattern = "^\\(.+\\)$", query)) {
+        query <- paste0("(", query, ")")
+    }
+
     con <- connect(dsn, uid = uid, pwd = pwd)
+
     dplyr::tbl(con, query)
 }
 
