@@ -1,10 +1,10 @@
 Package: getcdw
 Type: Package
 Title: Query the CADS Data Warehouse from R
-Version: 0.1.0.9002
+Version: 1.0.0
 Date: 2015-11-18
-Author: Tarak Shah
-Maintainer: Tarak Shah <tarak_shah@berkeley.edu>
+Author: Caleb Wolfson-Seeley
+Maintainer: Caleb Wolfson-Seeley <cwolfsonseeley@berkeley.edu>
 Description: Execute SQL queries from R and return data.frames
 License: MIT + file LICENSE
 Imports:
@@ -12,9 +12,9 @@ Imports:
     dplyr,
     memoise,
     sodium,
-    ROracle,
+    odbc,
     DBI,
     dbplyr
 LazyData: TRUE
-RoxygenNote: 6.0.1
+RoxygenNote: 7.1.2
 Suggests: testthat

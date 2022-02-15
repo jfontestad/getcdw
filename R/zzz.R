@@ -1,5 +1,5 @@
 .onLoad <- function(libname, pkgname) {
-    requireNamespace("ROracle", quietly = TRUE)
+    requireNamespace("odbc", quietly = TRUE)
 }
 
 .onUnload <- function(libpath) {

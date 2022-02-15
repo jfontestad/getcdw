@@ -17,7 +17,7 @@ text of the query.}
 
 \item{pwd}{Your password (see details)}
 
-\item{...}{Other arguments passed on to \code{dbSendQuery} in package \code{ROracle}}
+\item{...}{Other arguments passed on to \code{dbSendQuery} in package \code{odbc}}
 }
 \description{
 Get data from the CDW

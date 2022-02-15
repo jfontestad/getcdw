@@ -4,7 +4,7 @@
     function() {
         if (!is.null(drv)) return(drv)
         else {
-            drv <<- DBI::dbDriver("Oracle")
+            drv <<- DBI::dbDriver("odbc")
             return(drv)
         }
     }
@@ -36,7 +36,7 @@ new_connection_center <- function() {
 
     set <- function(dsn, uid, pwd) {
         key <- paste0(dsn, uid)
-        con <- ROracle::dbConnect(driver(), uid, pwd, dbname = dsn)
+        con <- odbc::dbConnect(odbc::odbc(), dsn = dsn, uid = uid, pwd = pwd)
         assign(key, con, pos = connections)
         return(con)
 
@@ -73,7 +73,7 @@ connect <- function(dsn, uid = NULL, pwd = NULL) {
 
     # check out the connection from the connection center
     # haven't yet checked that the connection is operational,
-    # though it had to be created succesfully
+    # though it had to be created successfully
     check_out(dsn, uid, pwd)
 }
 
@@ -82,7 +82,7 @@ reset <- connection_center("reset")
 
 disconnect <- function(connection) {
     tryCatch(
-        ROracle::dbDisconnect(connection),
+        odbc::dbDisconnect(connection),
         error = function(e) {
             if (grepl("invalid connection", e$message, ignore.case = TRUE))
                 return(TRUE)

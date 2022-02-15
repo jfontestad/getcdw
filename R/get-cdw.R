@@ -6,7 +6,7 @@
 #' @param dsn The name of the connection, as it appears in your \code{tnsnames}
 #' @param uid Your username (see details)
 #' @param pwd Your password (see details)
-#' @param ... Other arguments passed on to \code{dbSendQuery} in package \code{ROracle}
+#' @param ... Other arguments passed on to \code{dbSendQuery} in package \code{odbc}
 #'
 #' @details Returns a data.frame if the query is successful, otherwise an error.
 #' If you don't enter a username/password, \code{get_cdw} will check the global
@@ -35,8 +35,8 @@ run_qry <- function(query, dsn, uid, pwd, n = -1L, ...) {
     res <- send_qry(dsn = dsn, uid = uid, pwd = pwd, query = query, restart = TRUE)
 
     # fetch results
-    resdf <- ROracle::fetch(res, n = n)
-    ROracle::dbClearResult(res)
+    resdf <- odbc::dbFetch(res, n = n)
+    odbc::dbClearResult(res)
 
     # convert column names to lower-case, and add tbl_df class for
     # convenient printing
@@ -50,7 +50,7 @@ prep_output <- function(res) {
 
 send_qry <- function(dsn, uid, pwd, query, restart, ...) {
     connection <- connect(dsn, uid, pwd)
-    tryCatch(ROracle::dbSendQuery(connection, query, ...),
+    tryCatch(odbc::dbSendQuery(connection, query, ...),
              error = function(e) {
                  if (
                      (grepl("invalid connection", e$message, ignore.case = TRUE) ||

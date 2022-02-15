@@ -4,8 +4,14 @@
 \alias{preview_cdw}
 \title{Run a preview query}
 \usage{
-preview_cdw(query, n = 10, dsn = config("default_dsn"), uid = NULL,
-  pwd = NULL, ...)
+preview_cdw(
+  query,
+  n = 10,
+  dsn = config("default_dsn"),
+  uid = NULL,
+  pwd = NULL,
+  ...
+)
 }
 \arguments{
 \item{query}{A SQL query. This can be either the text of the query, the name
@@ -20,7 +26,7 @@ text of the query.}
 
 \item{pwd}{Your password (see details)}
 
-\item{...}{Other arguments passed on to \code{dbSendQuery} in package \code{ROracle}}
+\item{...}{Other arguments passed on to \code{dbSendQuery} in package \code{odbc}}
 }
 \description{
 Run a query but only return the first n rows of results. Useful for testing
