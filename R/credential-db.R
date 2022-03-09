@@ -10,7 +10,7 @@ get_credential.credential_db <- function(credentials, dsn) {
     mycred
 }
 
-set_credential <- function(credentials, dsn, uid, pwd) UseMethod("set_credential")
+set_credential <- function(credentials, dsn, uid, pwd, ) UseMethod("set_credential")
 set_credential.credential_db <- function(credentials, dsn, uid, pwd) {
     encrypted_password <- encrypt(pwd)
     assign(dsn,
@@ -25,7 +25,7 @@ set_credential.credential_db <- function(credentials, dsn, uid, pwd) {
 encrypt <- function(pwd) {
     key <- get_secret_passphrase()
     spwd <- serialize(pwd, NULL)
-
+    
     sodium::data_encrypt(spwd, key)
 }
 
