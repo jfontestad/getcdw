@@ -3,7 +3,7 @@ credential <- function(dsn) {
     dsncredential <- get_credentials_from_env(dsn)
     if (!is.null(dsncredential))
         return(dsncredential)
-
+    
     # otherwise see if the creds are in the encrypted db
     all_credentials <- load_db()
     dsncredential <- get_credential(all_credentials, dsn)
@@ -14,7 +14,7 @@ credential <- function(dsn) {
                                       names = c(varname("UID"), varname("PWD"))))
         return(dsncredential)
     }
-
+    
     # finally, prompt user for input
     get_credentials_from_user(dsn)
 }
@@ -29,17 +29,17 @@ get_credentials_from_user <- function(dsn) {
         } else {
             var <- .rs.askForPassword(msg)
         }
-
+        
         if (identical(var, "")) {
             stop("Invalid", call. = FALSE)
         }
-
+        
         do.call(Sys.setenv, structure(list(var), names = varname))
         var
     }
     UID <- ask_for_type("UID")
     PWD <- ask_for_type("PWD")
-
+    
     res <- list(UID = UID, PWD = PWD)
     store(dsn, res)
     invisible(res)
@@ -50,7 +50,7 @@ get_credentials_from_env <- function(dsn) {
         paste(toupper(dsn), type, sep = "_")
     uid <- Sys.getenv(varname("UID"))
     pwd <- Sys.getenv(varname("PWD"))
-
+    
     if (!identical(uid, "") && !identical(pwd, ""))
         return(list(UID = uid, PWD = pwd))
     else return(NULL)
@@ -74,6 +74,7 @@ store <- function(dsn, dsncredential) {
     credentials <- load_db()
     UID <- dsncredential$UID
     PWD <- dsncredential$PWD
+    
     set_credential(credentials, dsn, uid = UID, pwd = PWD)
     saveRDS(credentials, db_filename())
 }
